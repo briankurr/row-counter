@@ -1,113 +1,156 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
  * @format
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
   StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [currentRow, setCurrentRow] = useState(1);
+  const [currentCycle, setCurrentCycle] = useState(1);
+  const [totalRows, setTotalRows] = useState(1);
+  const [totalCycles, setTotalCycles] = useState(1);
 
-const App: () => React$Node = () => {
+  const handleAddRow = () => {
+    if (currentRow === totalRows) {
+      setCurrentRow(1);
+      setCurrentCycle((prevCycle) => prevCycle + 1);
+    } else {
+      setCurrentRow((prevRow) => prevRow + 1);
+    }
+  };
+
+  const handleSubtractRow = () => {
+    if (currentRow === 1) {
+      setCurrentCycle((prevCycle) => prevCycle - 1);
+      setCurrentRow(totalRows);
+    } else {
+      setCurrentRow((prevRow) => prevRow - 1);
+    }
+  };
+
+  const handleTotalRows = (value) => {
+    setTotalRows(parseInt(value));
+  };
+
+  const handleTotalCycles = (value) => {
+    setTotalCycles(parseInt(value));
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.circleButtonContainer}>
+          <CircleButton
+            onPress={handleAddRow}
+            style={styles.plusButton}
+            textStyle={styles.plusButtonText}
+            text={currentRow}
+          />
+          <CircleButton
+            onPress={handleSubtractRow}
+            style={styles.minusButton}
+            textStyle={styles.minusButtonText}
+            text="-"
+          />
+        </View>
+        <View style={styles.counterContainer}>
+          <View style={styles.textInput}>
+            <Text style={styles.counterText}>on row {currentRow} of </Text>
+            <TextInput
+              style={styles.counterText}
+              clearTextOnFocus
+              keyboardType={'numeric'}
+              onChangeText={handleTotalRows}
+              returnKeyType="done"
+              value={totalRows.toString()}
+            />
           </View>
-        </ScrollView>
+          <View style={styles.textInput}>
+            <Text style={styles.counterText}>repeat {currentCycle} of </Text>
+            <TextInput
+              style={styles.counterText}
+              clearTextOnFocus
+              keyboardType={'numeric'}
+              onChangeText={handleTotalCycles}
+              returnKeyType="done"
+              value={totalCycles.toString()}
+            />
+          </View>
+        </View>
       </SafeAreaView>
     </>
   );
 };
 
+const CircleButton = (props) => {
+  const {style, textStyle, text} = {...props};
+  return (
+    <TouchableOpacity style={style} onPress={props.onPress}>
+      <Text style={textStyle}>{text}</Text>
+    </TouchableOpacity>
+  );
+};
+
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    marginTop: 250,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  counterContainer: {
+    marginTop: 50,
   },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
+  counterText: {
     fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
+    fontWeight: 'bold',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+  circleButtonContainer: {
+    flexDirection: 'row',
   },
-  highlight: {
-    fontWeight: '700',
+  plusButton: {
+    borderRadius: 100,
+    backgroundColor: '#cc397b',
+    width: 200,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 50,
   },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  plusButtonText: {
+    fontSize: 54,
+    color: '#FFF',
+  },
+  minusButton: {
+    borderRadius: 25,
+    backgroundColor: '#3f314f',
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 150,
+  },
+  minusButtonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  textInput: {
+    marginTop: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
