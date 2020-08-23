@@ -13,7 +13,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import {Gauge} from './Gauge';
+//import {Gauge} from './Gauge';
 import {Instructions} from './Instructions';
 
 const screen = Dimensions.get('screen');
@@ -44,7 +44,6 @@ const App = () => {
         />
         <View style={styles.gaugeContainer}>
           <Text style={styles.headerText}>knitting row...</Text>
-          <Gauge row={1} rows={4} handleAddRow={handleAddRow} />
         </View>
       </SafeAreaView>
     </>
