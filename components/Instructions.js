@@ -15,20 +15,20 @@ const screen = Dimensions.get('screen');
 
 export const Instructions = ({
   prevRows,
-  prevCycles,
-  setRowsAndCycles,
+  prevRepeats,
+  setRowsAndRepeats,
   showModal,
   closeModal,
 }) => {
   const [rows, setRows] = useState(prevRows || '');
-  const [cycles, setCycles] = useState(prevCycles || '');
+  const [repeats, setRepeats] = useState(prevRepeats || '');
 
-  const saveButtonEnabled = () => rows && cycles;
+  const saveButtonEnabled = () => rows && repeats;
   const saveButtonText = () =>
     saveButtonEnabled() ? 'Save' : 'Please set rows and repeats';
 
   const handleSave = () => {
-    setRowsAndCycles(parseInt(rows), parseInt(cycles));
+    setRowsAndRepeats(parseInt(rows), parseInt(repeats));
     closeModal();
   };
 
@@ -66,8 +66,8 @@ export const Instructions = ({
                     keyboardType="number-pad"
                     returnKeyType="done"
                     maxLength={3}
-                    onChangeText={setCycles}
-                    value={cycles}
+                    onChangeText={setRepeats}
+                    value={repeats}
                   />
                   <Text style={styles.inputText}>times</Text>
                 </View>

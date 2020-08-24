@@ -9,28 +9,46 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Pressable,
   Text,
   View,
+  Pressable,
 } from 'react-native';
-//import {Gauge} from './Gauge';
+import ProgressCircle from 'react-native-progress-circle';
 import {Instructions} from './Instructions';
+import {CircleButton} from './CircleButton';
 
 const screen = Dimensions.get('screen');
 
 const App = () => {
-  const [currentRow, setCurrentRow] = useState(null);
-  const [rows, setRows] = useState(null);
-  const [cycles, setCycles] = useState(null);
+  const [currentRow, setCurrentRow] = useState(1);
+  const [rows, setRows] = useState(8);
+  const [repeats, setRepeats] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
 
-  const setRowsAndCycles = (rows, cycles) => {
+  const setRowsAndRepeats = (rows, repeats) => {
     setRows(rows);
-    setCycles(cycles);
+    setRepeats(repeats);
   };
+
   const handleAddRow = () => {
-    console.log('fsilaf');
+    if (currentRow === rows) {
+      setCurrentRow(1);
+    } else {
+      setCurrentRow((previousCurrentRow) => previousCurrentRow + 1);
+    }
+  };
+
+  const handleSubtractTow = () => {
+    if (currentRow === 1) {
+      setCurrentRow(rows);
+    } else {
+      setCurrentRow((previousCurrentRow) => previousCurrentRow - 1);
+    }
+  };
+
+  const getPercentage = () => {
+    return rows ? (currentRow / rows) * 100 : 0;
   };
 
   return (
@@ -40,10 +58,32 @@ const App = () => {
         <Instructions
           showModal={showModal}
           closeModal={() => setShowModal(false)}
-          setRowsAndCycles={setRowsAndCycles}
+          setRowsAndRepeats={setRowsAndRepeats}
         />
-        <View style={styles.gaugeContainer}>
-          <Text style={styles.headerText}>knitting row...</Text>
+        <View>
+          <View style={styles.gaugeContainer}>
+            <Text style={styles.headerText}>knitting row...</Text>
+            <ProgressCircle
+              percent={getPercentage()}
+              radius={125}
+              borderWidth={24}
+              color="#000"
+              shadowColor="#FFF"
+              bgColor="#F4327F"
+              outerCircleStyle={styles.gaugeBoxShadow}>
+              <Pressable onPress={handleAddRow} hitSlop={80}>
+                <Text style={styles.currentRowText}>{currentRow}</Text>
+                <Text style={styles.totalRowsText}>{`of ${rows}`}</Text>
+              </Pressable>
+            </ProgressCircle>
+            <CircleButton
+              text="-"
+              onPress={handleSubtractTow}
+              style={{...styles.minusButton, ...styles.gaugeBoxShadow}}
+              textStyle={styles.minusButtonText}
+            />
+          </View>
+          <View style={styles.repeatContainer}></View>
         </View>
       </SafeAreaView>
     </>
@@ -54,22 +94,61 @@ const styles = StyleSheet.create({
   container: {
     minWidth: screen.width,
     minHeight: screen.height,
+    display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F4327F',
   },
   gaugeContainer: {
-    flex: 1,
     flexDirection: 'column',
-    padding: 20,
+    alignItems: 'center',
+    maxHeight: 'auto',
+  },
+  gaugeBoxShadow: {
+    shadowColor: '#7D5773',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.46,
+    shadowRadius: 4.65,
+    elevation: 6,
+  },
+  currentRowText: {
+    fontFamily: 'Avenir',
+    fontSize: 80,
+    fontWeight: '700',
+    color: '#FFF',
+  },
+  totalRowsText: {
+    fontFamily: 'Avenir',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFF',
   },
   headerText: {
     fontSize: 32,
     fontWeight: 'bold',
+    fontFamily: 'Avenir',
     color: '#FFF',
     textAlign: 'center',
     padding: 30,
+  },
+  minusButton: {
+    borderRadius: 25,
+    backgroundColor: '#FFF',
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    left: -10,
+    bottom: -10,
+  },
+  minusButtonText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#F4327F',
   },
 });
 
