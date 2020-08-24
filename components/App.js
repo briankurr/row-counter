@@ -3,7 +3,7 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   SafeAreaView,
@@ -21,10 +21,14 @@ const screen = Dimensions.get('screen');
 
 const App = () => {
   const [currentRow, setCurrentRow] = useState(1);
-  const [rows, setRows] = useState(8);
+  const [rows, setRows] = useState(null);
+  const [currentRepeat, setCurrentRepeat] = useState(1);
   const [repeats, setRepeats] = useState(null);
-
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    setShowModal(!rows || !repeats);
+  }, [rows, repeats]);
 
   const setRowsAndRepeats = (rows, repeats) => {
     setRows(rows);
@@ -34,6 +38,7 @@ const App = () => {
   const handleAddRow = () => {
     if (currentRow === rows) {
       setCurrentRow(1);
+      setCurrentRepeat((previousCurrentRepeat) => previousCurrentRepeat + 1);
     } else {
       setCurrentRow((previousCurrentRow) => previousCurrentRow + 1);
     }
@@ -41,7 +46,10 @@ const App = () => {
 
   const handleSubtractTow = () => {
     if (currentRow === 1) {
-      setCurrentRow(rows);
+      if (currentRepeat !== 1) {
+        setCurrentRow(rows);
+        setCurrentRepeat((previousCurrentRepeat) => previousCurrentRepeat - 1);
+      }
     } else {
       setCurrentRow((previousCurrentRow) => previousCurrentRow - 1);
     }
@@ -67,13 +75,15 @@ const App = () => {
               percent={getPercentage()}
               radius={125}
               borderWidth={24}
-              color="#000"
+              color="#161616"
               shadowColor="#FFF"
               bgColor="#F4327F"
               outerCircleStyle={styles.gaugeBoxShadow}>
               <Pressable onPress={handleAddRow} hitSlop={80}>
                 <Text style={styles.currentRowText}>{currentRow}</Text>
-                <Text style={styles.totalRowsText}>{`of ${rows}`}</Text>
+                {rows && (
+                  <Text style={styles.totalRowsText}>{`of ${rows}`}</Text>
+                )}
               </Pressable>
             </ProgressCircle>
             <CircleButton
@@ -83,8 +93,15 @@ const App = () => {
               textStyle={styles.minusButtonText}
             />
           </View>
-          <View style={styles.repeatContainer}></View>
         </View>
+        {repeats && (
+          <View style={styles.repeatContainer}>
+            <Text
+              style={
+                styles.repeatHeaderText
+              }>{`${currentRepeat} of ${repeats} Repeats`}</Text>
+          </View>
+        )}
       </SafeAreaView>
     </>
   );
@@ -103,6 +120,22 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     maxHeight: 'auto',
+    marginBottom: 50,
+  },
+  repeatContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#161616',
+    minWidth: screen.width,
+    height: '100%',
+    padding: 50,
+  },
+  repeatHeaderText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    fontFamily: 'Avenir',
+    color: '#FFF',
+    textAlign: 'center',
   },
   gaugeBoxShadow: {
     shadowColor: '#7D5773',
