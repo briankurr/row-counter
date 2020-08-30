@@ -23,9 +23,9 @@ const screen = Dimensions.get('screen');
 
 const App = () => {
   const [currentRow, setCurrentRow] = useState(1);
-  const [rows, setRows] = useState(5);
+  const [rows, setRows] = useState(null);
   const [currentRepeat, setCurrentRepeat] = useState(1);
-  const [repeats, setRepeats] = useState(8);
+  const [repeats, setRepeats] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
