@@ -12,18 +12,20 @@ import {
   Text,
   View,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import ProgressCircle from 'react-native-progress-circle';
-import {Instructions} from './Instructions';
+import {Dots} from './Dots';
 import {CircleButton} from './CircleButton';
+import {Instructions} from './Instructions';
 
 const screen = Dimensions.get('screen');
 
 const App = () => {
   const [currentRow, setCurrentRow] = useState(1);
-  const [rows, setRows] = useState(null);
+  const [rows, setRows] = useState(5);
   const [currentRepeat, setCurrentRepeat] = useState(1);
-  const [repeats, setRepeats] = useState(null);
+  const [repeats, setRepeats] = useState(8);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -94,12 +96,20 @@ const App = () => {
             />
           </View>
         </View>
-        {repeats && (
+        {currentRepeat && repeats && (
           <View style={styles.repeatContainer}>
             <Text
               style={
                 styles.repeatHeaderText
               }>{`${currentRepeat} of ${repeats} Repeats`}</Text>
+            <View style={styles.dotContainer}>
+              <Dots currentRepeat={currentRepeat} totalRepeats={repeats} />
+            </View>
+            <Pressable
+              style={styles.editButton}
+              onPress={() => setShowModal(true)}>
+              <Text style={styles.repeatHeaderText}>Edit Instructions</Text>
+            </Pressable>
           </View>
         )}
       </SafeAreaView>
@@ -136,6 +146,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir',
     color: '#FFF',
     textAlign: 'center',
+  },
+  dotContainer: {
+    width: 250,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: 6,
+  },
+  todo: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FFF',
+    opacity: 0.5,
   },
   gaugeBoxShadow: {
     shadowColor: '#7D5773',
@@ -182,6 +205,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: '#F4327F',
+  },
+  editButton: {
+    marginTop: 180,
+    backgroundColor: '#F4327F',
+    padding: 8,
+    borderRadius: 24,
+    width: 300,
   },
 });
 
